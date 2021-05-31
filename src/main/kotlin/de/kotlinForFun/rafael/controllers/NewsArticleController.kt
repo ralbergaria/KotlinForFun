@@ -3,6 +3,7 @@ package de.kotlinForFun.rafael.controllers
 import de.kotlinForFun.rafael.controllers.exceptions.BadRequestException
 import de.kotlinForFun.rafael.controllers.exceptions.InternalServerException
 import de.kotlinForFun.rafael.controllers.exceptions.NotFoundException
+import de.kotlinForFun.rafael.models.NewsArticle
 import de.kotlinForFun.rafael.models.NewsArticleDTO
 import de.kotlinForFun.rafael.services.NewsArticleService
 import io.swagger.annotations.Api
@@ -74,15 +75,14 @@ class NewsArticleController @Autowired constructor(val newsArticleService: NewsA
         ApiResponse(code = 404, message = "Not Found"),
         ApiResponse(code = 500, message = "Internal Server Error")
     )
-    fun createNewsArticle(@Valid @RequestBody newsArticleDTO: NewsArticleDTO): ResponseEntity<String> {
+    fun createNewsArticle(@Valid @RequestBody newsArticleDTO: NewsArticleDTO): ResponseEntity<NewsArticle> {
         log.info("POST /api/v1/news_article/")
         try {
             if (newsArticleDTO.id != 0) {
                 throw BadRequestException("id should be not filled!")
             }
             newsArticleDTO.id = 0
-            newsArticleService.saveNewsArticle(newsArticleDTO.mapToEntity())
-            return ResponseEntity("NewsArticle created with success!", HttpStatus.ACCEPTED)
+            return ResponseEntity(newsArticleService.saveNewsArticle(newsArticleDTO.mapToEntity()), HttpStatus.ACCEPTED)
         } catch (e: BadRequestException) {
             throw e
         } catch (e: Exception) {
@@ -103,11 +103,10 @@ class NewsArticleController @Autowired constructor(val newsArticleService: NewsA
             if (newsArticleDTO.id == 0) {
                 throw BadRequestException("Missing newsArticle id!")
             }
-            if (newsArticleService.getNewsArticleById(newsArticleDTO.id) == null) {
-                throw NotFoundException("NewsArticle not found!")
-            }
-            newsArticleService.saveNewsArticle(newsArticleDTO.mapToEntity())
-            return ResponseEntity.ok("newsArticle update with success!")
+            val oldNewsArticle = newsArticleService.getNewsArticleById(newsArticleDTO.id) ?: throw NotFoundException("NewsArticle not found!")
+            oldNewsArticle.text = newsArticleDTO.text
+            oldNewsArticle.title = newsArticleDTO.title
+            return ResponseEntity(newsArticleService.saveNewsArticle(oldNewsArticle), HttpStatus.OK)
         } catch (e: NotFoundException) {
             throw e
         } catch (e: BadRequestException) {

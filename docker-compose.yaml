@@ -1,0 +1,19 @@
+# See README.md on how to use this config
+
+version: "3.9"
+services:
+  java:
+    build: .
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/news
+    profiles: ["java"]
+    network_mode: host
+  postgres:
+    image: maven.kriegerit.de:18444/library/postgres:13.1
+    environment:
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_USER=news
+      - POSTGRES_DB=news
+    ports:
+      - "5432:5432"
