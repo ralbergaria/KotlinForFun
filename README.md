@@ -19,7 +19,11 @@ This service provides APIs to manage newsArticle
 ### IntelliJ IDEA
 * import the project as a Gradle project
 * Go to Run | Edit configuration
-* Creat Spring Boot Runner add "de.kriegerit.w4k.media.MediaApp" as main class
+* Creat Spring Boot Runner add "de.kotlinForFun.rafael.RafaelApplication" as main class
+
+### Without IntelliJ IDEA
+./gradle build
+./gradle run
 
 # To access Swagger
 http://localhost:8080/swagger-ui.html

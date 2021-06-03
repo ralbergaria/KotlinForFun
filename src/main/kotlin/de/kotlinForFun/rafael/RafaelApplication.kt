@@ -4,8 +4,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class RafaelApplication
-
-fun main(args: Array<String>) {
-	runApplication<RafaelApplication>(*args)
+class RafaelApplication {
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            runApplication<RafaelApplication>(*args)
+        }
+    }
 }
